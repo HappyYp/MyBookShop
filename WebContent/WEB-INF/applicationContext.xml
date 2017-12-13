@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:p="http://www.springframework.org/schema/p"
+     xmlns:context="http://www.springframework.org/schema/context"
+     xmlns:tx="http://www.springframework.org/schema/tx"
+     xmlns:aop="http://www.springframework.org/schema/aop"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-4.3.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+         <!-- 扫描注解符，自动注入 -->
+        <context:component-scan base-package="com.zyp" />
+        <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+    		<!-- one of the properties available; the maximum file size in bytes -->
+    		<property name="maxUploadSize" value="100000000"/>
+		</bean>
+        <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" >
+       	 <property name="prefix" value="/"></property>
+       	 <property name="suffix" value=".jsp"></property>
+        </bean>	
+        <!-- 建立数据源 -->
+		<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+			<property name="driverClassName" value="com.mysql.jdbc.Driver"> </property>
+			<property name="url" value="jdbc:mysql://localhost:3306/zyp_bookshop?characterEncoding=utf8"></property>
+			<property name="username" value="root"></property>
+			<property name="password" value=""></property>
+		</bean>
+		<!-- 把数据源注入给Session工厂 -->
+		<bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+				<property name="dataSource" ref="dataSource"></property>
+				<!-- <property name="hibernateProperties">
+					<props>
+						<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</prop>
+						<prop key="hibernate.show_sql">true</prop>
+						<prop key="hibernate.format_sql">false</prop>
+						<prop key="hibernate.userUnicode">true</prop>
+						<prop key="hibernate.characterEncoding">true</prop>
+						<prop key="hibernate.hbm2ddl.auto">update</prop>
+					</props>
+				</property> -->
+				<!-- 配置映射文件引入 -->
+				<property name="configLocation" value="classpath:hibernate.cfg.xml"></property>
+				<property name="mappingLocations" value="classpath:com/zyp/bean/*.hbm.xml"></property>
+				
+				<!-- 配置映射文件引入 -->
+				<!-- <property name="mappingResources">
+					<list>
+						<value>com/zyp/bean/Book.hbm.xml</value>
+						<value>com/zyp/bean/BookType.hbm.xml</value>
+								
+					</list>
+				</property> -->
+				
+		</bean><!-- 配置事务 -->
+		  <bean id="txManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+		    <property name="sessionFactory" ref="sessionFactory"/>
+		</bean>
+		<tx:annotation-driven transaction-manager="txManager"/>
+	    <bean id="interceptor1" class="com.zyp.interceptor.UserInterceptor"><!-- 配置拦截器 -->
+	
+		</bean>
+		<mvc:interceptors>
+			<mvc:interceptor>
+				<mvc:mapping path="/userBuy.do"/>
+				<ref bean="interceptor1"/>
+			</mvc:interceptor>
+		</mvc:interceptors>
+</beans>

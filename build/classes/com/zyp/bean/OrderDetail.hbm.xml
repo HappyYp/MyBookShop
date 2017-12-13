@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.zyp.bean">
+	<class name="OrderDetail" table="orderdetail">
+		<id name="detailId" type="int">
+			<column name="DETAILID" />
+			<generator class="native" />
+		</id>
+		<!-- <many-to-one name="orders" column="ORDERID" cascade="all" unique="true"/> -->
+		<one-to-one name="orders" property-ref="orderDetail"/>
+		<property name="count" not-null="true" type="int">
+			<column name="COUNT" />
+		</property>
+		<set name="bookSet" table="ORDERDETAILBOOK" inverse="false" lazy="false">
+			<key column="DETAILID"/>
+			<many-to-many class="Book" column="BOOKID"/>
+		</set>
+		<property name="totalMoney" not-null="true" type="double">
+			<column name="TOTALMONEY" />
+		</property>
+	</class>
+</hibernate-mapping>

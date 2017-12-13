@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.zyp.bean">
+	<class name="Users" table="users">
+		<id name="userId" type="int">
+			<column name="USERID" />
+			<generator class="native" />
+		</id>
+		<property name="username" not-null="true" type="java.lang.String">
+			<column name="USERNAME" />
+		</property>
+		<property name="password" not-null="true" type="java.lang.String">
+			<column name="PASSWORD" />
+		</property>
+		<property name="email" not-null="true" type="java.lang.String">
+			<column name="EMAIL" />
+		</property>
+		<property name="tel" not-null="true" type="java.lang.String">
+			<column name="TEL" />
+		</property>
+		<property name="address" not-null="true" type="java.lang.String">
+			<column name="ADDRESS" />
+		</property>
+		<property name="posttime" not-null="true" type="java.lang.String">
+			<column name="POSTTIME" />
+		</property>
+		
+		<set name="ordersSet" cascade="delete">
+			<key column="USERID" />
+			<one-to-many class="Orders" />
+		</set>
+	</class>
+</hibernate-mapping>
